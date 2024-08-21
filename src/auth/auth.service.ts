@@ -25,7 +25,7 @@ export class AuthService {
       if (!isMatch) {
         throw new NotFoundException('Password is wrong. Please try again!');
       }
-      const payload = { email: user.email };
+      const payload = { email: user.email, role: user.role };
       // const { password, ...user } = isMatch;
       return {
         access_token: await this.jwtService.sign(payload),

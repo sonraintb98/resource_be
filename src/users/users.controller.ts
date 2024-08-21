@@ -10,32 +10,34 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { RoleGuard } from 'src/auth/guards/role.guard';
+import { Role } from 'src/common/enums/role.enum';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([Role.Admin]))
   @Post('create')
   async createUser(@Body() createUserDto: CreateUserDto) {
     const user = await this.usersService.create(createUserDto);
     return user;
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([Role.Admin]))
   @Get('getAllUsers')
   async findAll() {
     return this.usersService.getAllUsers();
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([Role.Admin]))
   @Post('updateUser')
   async updateUser(@Body() updateUserDto: UpdateUserDto) {
     return this.usersService.updateUser(updateUserDto);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([Role.Admin]))
   @Delete(':email')
   async remove(@Param('email') email: string) {
     console.log('email:', email);
