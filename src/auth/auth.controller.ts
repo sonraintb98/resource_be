@@ -1,8 +1,9 @@
-import { Controller, Post, Body, UseGuards, Get } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
 import { LoginUserDto } from './dto/login-user.dto';
 import { JwtAuthGuard } from './guards/jwt.guard';
+import { LogoutUserDto } from './dto/logout-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -18,8 +19,8 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('/get')
-  async getAllRoles() {
-    console.log('Hello Son Ngu');
+  @Post('signout')
+  async signout(@Body() body: LogoutUserDto) {
+    return await this.authService.signout(body);
   }
 }

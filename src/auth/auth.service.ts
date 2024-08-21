@@ -5,6 +5,7 @@ import { Model } from 'mongoose';
 import { AuthRepository } from './auth.repository';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { LogoutUserDto } from './dto/logout-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -13,6 +14,7 @@ export class AuthService {
     private readonly authRepository: AuthRepository,
     private readonly jwtService: JwtService,
   ) {}
+
   async signin(email: string, password: string) {
     const user = await this.authRepository.findByEmail(email);
 
@@ -29,5 +31,16 @@ export class AuthService {
         access_token: await this.jwtService.sign(payload),
       };
     }
+  }
+
+  async signout(logoutUserDto: LogoutUserDto) {
+    const user = await this.authRepository.findByEmail(logoutUserDto.email);
+    if (!user) {
+      throw new NotFoundException('User not found. Please try again!');
+    }
+
+    // await this.tokensRepository.deleteByEmail(logoutUserDto.email);
+
+    return user.email;
   }
 }

@@ -3,7 +3,6 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-  NotFoundException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User, UserDocument } from 'src/schemas/user.schema';
@@ -12,7 +11,6 @@ import { Model } from 'mongoose';
 import { UsersRepository } from './users.repository';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
-import { LogoutUserDto } from './dto/logout-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -21,7 +19,7 @@ export class UsersService {
     private readonly usersRepository: UsersRepository,
   ) {}
 
-  async signup(userDto: CreateUserDto) {
+  async create(userDto: CreateUserDto) {
     // See if email is in use
     const user = await this.usersRepository.findByEmail(userDto.email);
     if (user) {
@@ -46,31 +44,6 @@ export class UsersService {
     const newUser = await this.usersRepository.create(userDto);
 
     return newUser;
-  }
-
-  async signin(email: string, password: string) {
-    const user = await this.usersRepository.findByEmail(email);
-
-    if (!user) {
-      throw new NotFoundException('User not found. Please try again!');
-    } else {
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) {
-        throw new NotFoundException('Password is wrong. Please try again!');
-      }
-      return user;
-    }
-  }
-
-  async signout(logoutUserDto: LogoutUserDto) {
-    const user = await this.usersRepository.findByEmail(logoutUserDto.email);
-    if (!user) {
-      throw new NotFoundException('User not found. Please try again!');
-    }
-
-    // await this.tokensRepository.deleteByEmail(logoutUserDto.email);
-
-    return user.email;
   }
 
   async getAllUsers() {
