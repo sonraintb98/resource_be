@@ -25,6 +25,13 @@ export class User {
 
   @Prop({ required: true })
   role: number;
+
+  @Prop({
+    type: 'boolean',
+    required: false,
+    default: false,
+  })
+  isDeleted: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

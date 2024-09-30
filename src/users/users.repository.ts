@@ -6,7 +6,9 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from 'src/schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
+import { PaginationDto } from 'src/shared';
+import { CONST, Pagination } from 'src/common';
 
 @Injectable()
 export class UsersRepository {
@@ -39,5 +41,32 @@ export class UsersRepository {
       throw new BadRequestException('Email cannot be null or empty!');
     }
     return this.userModel.findOne({ id });
+  }
+
+  async paginate(
+    filter?: FilterQuery<User>,
+    pagination?: PaginationDto,
+  ): Promise<{ data: User[]; pagination: Pagination }> {
+    const page: number = pagination?.page || CONST.DEFAULT_START_PAGE;
+    const limit: number = pagination?.limit || CONST.DEFAULT_LIMIT_QUERY;
+    const count = await this.userModel.count(filter).exec();
+    const data = await this.userModel
+      .find(filter, null, {
+        sort: {
+          _id: -1, // -1: DESC; 1: ASC
+        },
+        skip: (page - 1) * limit,
+        limit: Number(limit),
+      })
+      .exec();
+
+    return { data: data, pagination: { total: count, page, limit } };
+  }
+
+  async findOneSon(filter: FilterQuery<User>): Promise<User> {
+    return this.userModel.findOne(filter);
+  }
+  async findOneByEmail(email: string): Promise<User> {
+    return this.findOneSon({ email: email, activated: true });
   }
 }

@@ -10,6 +10,13 @@ async function bootstrap() {
   const configService: ConfigService = app.get<ConfigService>(ConfigService);
   const port = configService.get(PORT);
 
+  app.enableCors({
+    origin: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+    exposedHeaders: ['Content-Disposition'],
+  });
+
   await app.listen(port);
 }
 bootstrap();

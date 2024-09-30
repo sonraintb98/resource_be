@@ -11,6 +11,9 @@ import { Model } from 'mongoose';
 import { UsersRepository } from './users.repository';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
+import { failureResponse, successResponse } from 'src/shared/responses';
+import { PaginationDto } from 'src/shared';
+import responseMessage from 'src/common/messages';
 
 @Injectable()
 export class UsersService {
@@ -46,8 +49,23 @@ export class UsersService {
     return newUser;
   }
 
-  async getAllUsers() {
-    return this.userModel.find();
+  async getAllUsers(paginationDto?: PaginationDto) {
+    let res = successResponse();
+    try {
+      const usersResponse = await this.usersRepository.paginate(
+        { isDeleted: false },
+        paginationDto,
+      );
+      res.data = usersResponse.data;
+      res.pagination = usersResponse.pagination;
+    } catch (error) {
+      res = failureResponse(
+        [],
+        error.message || responseMessage.unknownException,
+      );
+    }
+
+    return res;
   }
 
   async updateUser(updateUserDto: UpdateUserDto) {
