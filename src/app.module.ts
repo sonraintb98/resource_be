@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { MONGO_URI } from 'src/config';
+import { TokensModule } from './tokens/tokens.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { MONGO_URI } from 'src/config';
     // MongooseModule.forRoot('mongodb://localhost/nest'),
     UsersModule,
     AuthModule,
+    TokensModule,
   ],
   controllers: [AppController],
   providers: [AppService],

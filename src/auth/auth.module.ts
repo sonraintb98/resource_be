@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -9,6 +9,7 @@ import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { ConfigService } from '@nestjs/config';
+import { TokensModule } from 'src/tokens/tokens.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ConfigService } from '@nestjs/config';
       },
       inject: [ConfigService],
     }),
+    forwardRef(() => TokensModule),
   ],
   controllers: [AuthController],
   providers: [AuthService, AuthRepository, LocalStrategy, JwtStrategy],

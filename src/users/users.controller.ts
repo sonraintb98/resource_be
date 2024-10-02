@@ -14,6 +14,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { RoleGuard } from 'src/auth/guards/role.guard';
 import { Role } from 'src/common/enums/role.enum';
 import { PaginationDto } from 'src/shared/dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
 @Controller('users')
 export class UsersController {
@@ -26,8 +27,8 @@ export class UsersController {
     return user;
   }
 
-  // @UseGuards(JwtAuthGuard)
-  // @UseGuards(RoleGuard([Role.Admin]))
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([Role.Admin, Role.HrStaff]))
   @Get('getAllUsers')
   async findAll(@Query() query: PaginationDto) {
     return this.usersService.getAllUsers(query);

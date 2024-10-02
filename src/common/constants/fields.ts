@@ -63,3 +63,6 @@ export const NOSALES_DN = 'NOSALE_DAN_NOPRO (nosales no project)';
 export const NOSALES_HCM = 'NOSALE_HCM_NOPRO (nosales no project)';
 export const RESOURCE_ASSIGNMENT_ACTUAL = 'Resource Assignment Actual';
 export const RESOURCE_ASSIGNMENT_ACTUAL_ID = 'Resource Assignment Actual ID';
+
+export const EMAIL_ADDRESS_NAME = 'Email address';
+export const USER_NAME = 'User';
